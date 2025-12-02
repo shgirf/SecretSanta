@@ -1,28 +1,23 @@
-// Firebase Configuration
-// IMPORTANT: Replace these values with your own Firebase project credentials
-// See README.md for detailed setup instructions
+// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-
+import { getDatabase, ref, set, update, get, child } from "firebase/database";
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBq5hgbWUbwe7J7qcYvZiI2e0on6khicvI",
-  authDomain: "secret-santa-dec9c.firebaseapp.com",
-  databaseURL: "https://secret-santa-dec9c-default-rtdb.firebaseio.com",
-  projectId: "secret-santa-dec9c",
-  storageBucket: "secret-santa-dec9c.firebasestorage.app",
-  messagingSenderId: "510850878676",
-  appId: "1:510850878676:web:1b7425967ed5d97abe3f41",
-  measurementId: "G-L9WN2L0DKK"
+  apiKey: "AIzaSyDbZLx_su2RTUGnXVcxZqEroBXhjmxXy3o",
+  authDomain: "secretsantagame-9f7de.firebaseapp.com",
+  databaseURL: "https://secretsantagame-9f7de-default-rtdb.firebaseio.com",
+  projectId: "secretsantagame-9f7de",
+  storageBucket: "secretsantagame-9f7de.firebasestorage.app",
+  messagingSenderId: "362424177114",
+  appId: "1:362424177114:web:547bfcf79ab5a2a61070e3"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 
 // Reference to the names pool in the database
 const namesRef = database.ref('secretSanta/names');
 
-// Initialize the names pool if it doesn't exist
 function initializeNamesPool() {
     const allNames = ['Shane', 'Devin', 'Julie', 'Mike', 'Rae'];
     
