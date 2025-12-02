@@ -1,7 +1,4 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, update, get, child } from "firebase/database";
-// Your web app's Firebase configuration
+// Firebase Configuration - COMPAT VERSION (works with CDN scripts in HTML)
 const firebaseConfig = {
   apiKey: "AIzaSyDbZLx_su2RTUGnXVcxZqEroBXhjmxXy3o",
   authDomain: "secretsantagame-9f7de.firebaseapp.com",
@@ -12,12 +9,14 @@ const firebaseConfig = {
   appId: "1:362424177114:web:547bfcf79ab5a2a61070e3"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Initialize Firebase using compat API
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
 
 // Reference to the names pool in the database
 const namesRef = database.ref('secretSanta/names');
 
+// Initialize the names pool if it doesn't exist
 function initializeNamesPool() {
     const allNames = ['Shane', 'Devin', 'Julie', 'Mike', 'Rae'];
     
@@ -35,6 +34,8 @@ function initializeNamesPool() {
             namesRef.set(initialPool);
             console.log('Names pool initialized');
         }
+    }).catch((error) => {
+        console.error('Error initializing pool:', error);
     });
 }
 
@@ -54,6 +55,9 @@ function getAvailableNames(userName) {
         });
         
         return available;
+    }).catch((error) => {
+        console.error('Error getting available names:', error);
+        throw error;
     });
 }
 
@@ -63,12 +67,14 @@ function markNameAsDrawn(name, drawnBy) {
         available: false,
         drawnBy: drawnBy,
         timestamp: Date.now()
+    }).catch((error) => {
+        console.error('Error marking name as drawn:', error);
+        throw error;
     });
 }
 
 // Reset the pool (for testing/new rounds)
-// Uncomment this function and call it from console if you need to reset
-/*
+// Call this from browser console: resetNamesPool()
 function resetNamesPool() {
     const allNames = ['Shane', 'Devin', 'Julie', 'Mike', 'Rae'];
     const resetPool = {};
@@ -81,9 +87,11 @@ function resetNamesPool() {
     });
     namesRef.set(resetPool).then(() => {
         console.log('Names pool has been reset');
+        alert('Pool reset! All names are available again.');
+    }).catch((error) => {
+        console.error('Error resetting pool:', error);
     });
 }
-*/
 
 // Initialize the pool when the page loads
 initializeNamesPool();

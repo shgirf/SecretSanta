@@ -12,15 +12,14 @@ let showPaper = false;
 
 // Baseball cap dimensions
 let capCenterX, capCenterY;
-let capWidth = 200;
-let capHeight = 120;
-let billWidth = 240;
-let billHeight = 40;
+let capWidth = 180;
+let capHeight = 100;
+let billLength = 140;
 
 // Colors
-const CAP_COLOR = '#2D5D4F'; // Deep green
-const CAP_SHADOW = '#1A3830';
-const BILL_COLOR = '#234339';
+const CAP_COLOR = '#8B5A3C'; // Warm brown/red like reference
+const CAP_SHADOW = '#6B4530';
+const BILL_COLOR = '#7A4A32';
 const PAPER_COLOR = '#F5ECD7';
 const TEXT_COLOR = '#2D5D4F';
 
@@ -81,55 +80,141 @@ function drawBaseballCap() {
     push();
     translate(capCenterX, capCenterY);
     
-    // Shadow
+    // Shadow underneath
     noStroke();
-    fill(0, 0, 0, 20);
-    ellipse(0, capHeight + 20, capWidth + 40, 20);
+    fill(0, 0, 0, 15);
+    ellipse(0, 75, capWidth + 40, 20);
     
-    // Cap bill (brim)
+    // UPSIDE DOWN BASEBALL CAP - SIDE VIEW (like the reference image)
+    // Opening is at TOP, crown/dome at BOTTOM, bill sticks out to the RIGHT
+    
+    let openingExpand = capOpenProgress * 30;
+    
+    // BILL/BRIM - Draw first (behind the cap body)
     fill(BILL_COLOR);
     stroke(CAP_SHADOW);
-    strokeWeight(2);
+    strokeWeight(2.5);
     
-    // Bill shape
+    // Bill shape - curved, three-dimensional, sticking to the right
     beginShape();
-    vertex(-billWidth/2, 10);
-    bezierVertex(-billWidth/2, 10, -billWidth/2, billHeight, -billWidth/3, billHeight);
-    bezierVertex(-billWidth/3, billHeight, billWidth/3, billHeight, billWidth/3, billHeight);
-    bezierVertex(billWidth/3, billHeight, billWidth/2, billHeight, billWidth/2, 10);
-    vertex(billWidth/2, 10);
-    vertex(-billWidth/2, 10);
+    vertex(40, -10); // Where bill meets cap on top left
+    bezierVertex(40, -10,
+                 40 + billLength * 0.7, -20,
+                 40 + billLength, -10); // Bill curves down
+    bezierVertex(40 + billLength, -10,
+                 40 + billLength - 5, 5,
+                 40 + billLength - 15, 20); // Curves back toward cap
+    bezierVertex(40 + billLength - 15, 20,
+                 40 + billLength * 0.5, 25,
+                 40, 20); // Back to cap on bottom
     endShape(CLOSE);
     
-    // Main cap body
+    // Bill underside shadow detail
+    fill(CAP_SHADOW);
+    noStroke();
+    beginShape();
+    vertex(45, 5);
+    bezierVertex(45, 5,
+                 40 + billLength * 0.5, 8,
+                 40 + billLength - 25, 15);
+    bezierVertex(40 + billLength - 25, 15,
+                 40 + billLength * 0.4, 18,
+                 45, 18);
+    endShape(CLOSE);
+    
+    // Stitching line on bill
+    stroke(CAP_SHADOW);
+    strokeWeight(1);
+    noFill();
+    beginShape();
+    vertex(50, 0);
+    bezierVertex(50, 0,
+                 40 + billLength * 0.6, -5,
+                 40 + billLength - 20, 0);
+    endShape();
+    
+    // MAIN CAP BODY
     fill(CAP_COLOR);
+    stroke(CAP_SHADOW);
+    strokeWeight(2.5);
     
-    // Top of cap (closed)
-    ellipse(0, -capHeight/2, capWidth, 60);
+    // Left side of crown (rounded dome at bottom)
+    beginShape();
+    vertex(-70, -15); // Top left edge
+    bezierVertex(-70, -15,
+                 -80, 20,
+                 -70, 55); // Curves down left side
+    bezierVertex(-70, 55,
+                 -40, 72,
+                 0, 75); // Bottom rounded curve (crown)
+    endShape();
     
-    // Cap sides
-    rect(-capWidth/2, -capHeight/2, capWidth, capHeight - 10, 0, 0, 15, 15);
+    // Right side of crown
+    beginShape();
+    vertex(0, 75); // Bottom center
+    bezierVertex(0, 75,
+                 35, 72,
+                 60, 58); // Curves to right
+    bezierVertex(60, 58,
+                 70, 25,
+                 55, -15); // Up to top right
+    endShape();
     
-    // Cap opening - this will animate
-    let openingHeight = capOpenProgress * 30;
+    // Top connecting section (between crown and opening)
+    fill(CAP_COLOR);
+    quad(-70, -15,  // Top left
+         55, -15,   // Top right
+         55, 5,     // Bottom right
+         -70, 5);   // Bottom left
     
-    // Opening of the cap (bottom oval) - gets bigger when opening
-    fill(30, 30, 30);
-    ellipse(0, capHeight/2 - 10 + openingHeight/2, 
-            capWidth - 20 + openingHeight, 
-            40 + openingHeight);
+    // Panel seam lines for realism
+    stroke(CAP_SHADOW);
+    strokeWeight(1.5);
+    noFill();
     
-    // Inner shadow of opening
-    fill(20, 20, 20, 100);
-    ellipse(0, capHeight/2 - 15 + openingHeight/2, 
-            capWidth - 30 + openingHeight, 
-            30 + openingHeight);
+    // Center seam
+    beginShape();
+    vertex(-5, -12);
+    bezierVertex(-5, -12,
+                 -10, 30,
+                 0, 75);
+    endShape();
     
-    // Decorative stitching on cap
+    // Left panel seam
+    beginShape();
+    vertex(-40, -13);
+    bezierVertex(-40, -13,
+                 -50, 25,
+                 -40, 62);
+    endShape();
+    
+    // Right panel seam  
+    beginShape();
+    vertex(25, -13);
+    bezierVertex(25, -13,
+                 38, 25,
+                 32, 60);
+    endShape();
+    
+    // CAP OPENING AT TOP (where we draw from) - expands when opening
+    fill(25, 25, 25);
     stroke(CAP_SHADOW);
     strokeWeight(2);
-    noFill();
-    arc(0, -capHeight/2 + 20, capWidth - 40, 40, 0, PI);
+    
+    // Opening ellipse - gets bigger with animation
+    ellipse(-7, -15, 135 + openingExpand, 38 + openingExpand);
+    
+    // Inner darkness
+    fill(15, 15, 15);
+    noStroke();
+    ellipse(-7, -13, 115 + openingExpand, 28 + openingExpand);
+    
+    // Button detail on crown bottom
+    fill(CAP_SHADOW);
+    noStroke();
+    ellipse(0, 72, 14, 10);
+    fill(BILL_COLOR);
+    ellipse(0, 71, 12, 8);
     
     pop();
 }
@@ -138,13 +223,13 @@ function drawPaperSlip() {
     push();
     translate(capCenterX, capCenterY);
     
-    // Paper emerges from the cap
-    let paperY = (capHeight/2 - 20) + paperSlipProgress * 100;
+    // Paper emerges from the TOP opening of the upside-down cap
+    let paperY = -20 - (paperSlipProgress * 100);
     
     // Paper shadow
     noStroke();
     fill(0, 0, 0, 30);
-    rect(-35, paperY + 5, 70, 90, 5);
+    rect(-35, paperY + 3, 70, 90, 5);
     
     // Paper slip
     fill(PAPER_COLOR);
@@ -226,7 +311,7 @@ function mousePressed() {
     
     // Check if mouse is over the cap
     let d = dist(mouseX, mouseY, capCenterX, capCenterY);
-    if (d < capWidth/2 && !isDrawing) {
+    if (d < capWidth && !isDrawing) {
         drawNameFromHat();
     }
 }
